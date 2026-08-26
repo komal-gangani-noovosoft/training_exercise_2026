@@ -1,0 +1,37 @@
+.container{
+    display: flex;
+    justify-content: space-around;
+    margin: 10px;
+
+}
+
+.heading{
+    border: 1px solid black;
+    padding: 0.5em;
+    background-color: beige;
+}
+.input{
+    display: flex;
+    justify-content: space-between;
+    gap : 0.7em;
+    margin: 0 2em;
+}
+
+
+.input:hover{
+    font-size: 20px;
+}
+.result{
+    margin: 0 2em;
+}
+
+.main{
+    border: 1px solid black;
+    border-radius: 1em;
+    width: 60%;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
