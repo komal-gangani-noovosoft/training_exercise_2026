@@ -69,6 +69,39 @@ function roman(num){
 
 }
 
+const value =[1000, 500, 100, 50, 10, 5, 1];
+const symbol2 = ['M', 'D', 'C', 'L', 'X', 'V', 'I'];
+
+function roman2(num){
+    let ans = ""
+    for(let i=0;i<symbol2.length;i++){
+        while(num>=value[i]){
+            ans+= symbol2[i]
+            num -= value[i]
+        }
+        let val = 0
+        let sym = ""
+
+        if(value[i]===1000 || value[i]===500){
+            val = value[i] - 100
+            sym = "C" + symbol2[i]
+        }else if(value[i]===100 || value[i]===50){
+            val = value[i] - 10
+            sym = "X" + symbol2[i]
+        }else if(value[i]===10 || value[i]===5){
+            val = value[i] - 1
+            sym = "I" + symbol2[i]
+        }
+
+        if(num>=val){
+            ans+=sym
+            num-=val
+        }
+    }
+
+    return ans
+}
+
 function integer(roman){
     let prev
     let ans = 0
@@ -116,4 +149,3 @@ roman_input.addEventListener('input' , ()=>{
 
     }
 })
-
