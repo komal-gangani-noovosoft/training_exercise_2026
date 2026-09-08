@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+      :class="{ 'dark': darkMode }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioAI | Advanced Risk Prediction</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cardio: { 500: '#ef4444', 600: '#dc2626', 900: '#7f1d1d' }, // Red
+                        medical: { 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' }, // Blue
+                        darkbg: '#09090b',
+                        cardbg: '#18181b'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-darkbg dark:text-gray-100 transition-colors duration-300 font-sans antialiased overflow-x-hidden">
+
+    <nav class="fixed w-full z-50 glass border-b border-gray-200 dark:border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="/" class="flex items-center space-x-2 group">
+                    <i data-lucide="heart-pulse" class="w-8 h-8 text-cardio-500 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xl font-bold tracking-tight">Cardio<span class="text-cardio-500">AI</span></span>
+                </a>
+                
+                <div class="flex items-center space-x-8">
+                    <div class="hidden md:flex space-x-6 text-sm font-medium">
+                        <a href="/" class="hover:text-cardio-500 transition">Home</a>
+                        <a href="/insights" class="hover:text-cardio-500 transition">AI Insights</a>
+                    </div>
+                    
+                    <a href="/predict" class="bg-cardio-600 hover:bg-cardio-500 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg shadow-cardio-500/30 transition hover:-translate-y-0.5">
+                        Check Risk
+                    </a>
+
+                    <button @click="darkMode = !darkMode" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition">
+                        <i x-show="!darkMode" data-lucide="moon" class="w-5 h-5 text-gray-600"></i>
+                        <i x-show="darkMode" data-lucide="sun" class="w-5 h-5 text-yellow-400"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-20 min-h-screen relative">
+        <div class="absolute inset-0 ecg-bg opacity-20 pointer-events-none z-0"></div>
+        <div class="relative z-10">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-200 dark:border-white/10 mt-20 py-10 text-center text-sm text-gray-500 relative z-10 glass">
+        <p>© 2026 CardioAI Research. Not for clinical diagnosis.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

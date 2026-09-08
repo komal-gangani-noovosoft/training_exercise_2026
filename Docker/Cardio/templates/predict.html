@@ -1,0 +1,196 @@
+<!-- <form action="/result" method="post">
+
+<label>Age:</label>
+<input type="number" name="age" required><br><br>
+
+<label>Gender:</label>
+<select name="gender">
+  <option value="1">Male</option>
+  <option value="2">Female</option>
+</select><br><br>
+
+<label>Height (cm):</label>
+<input type="number" name="height" required><br><br>
+
+<label>Weight (kg):</label>
+<input type="number" name="weight" required><br><br>
+
+<label>Systolic BP:</label>
+<input type="number" name="ap_hi" required><br><br>
+
+<label>Diastolic BP:</label>
+<input type="number" name="ap_lo" required><br><br>
+
+<label>Do you smoke?</label>
+<select name="smoke">
+  <option value="1">Yes</option>
+  <option value="0">No</option>
+</select><br><br>
+
+<label>Alcohol intake?</label>
+<select name="alco">
+  <option value="1">Yes</option>
+  <option value="0">No</option>
+</select><br><br>
+
+<label>Physically active?</label>
+<select name="active">
+  <option value="1">Yes</option>
+  <option value="0">No</option>
+</select><br><br>
+
+<label>Cholesterol Level:</label>
+<select name="cholesterol">
+  <option value="1">Normal</option>
+  <option value="2">Above Normal</option>
+  <option value="3">High</option>
+</select>
+
+<label>Glucose Level:</label>
+<select name="gluc">
+  <option value="1">Normal</option>
+  <option value="2">Above Normal</option>
+  <option value="3">High</option>
+</select>
+
+<button type="submit">Predict</button>
+
+</form> -->
+
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-12">
+    
+    <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold">Patient Vitals</h2>
+        <p class="text-gray-500 dark:text-gray-400">Enter biometric data for AI analysis.</p>
+    </div>
+
+    <form action="/result" method="POST" class="glass p-8 md:p-12 rounded-3xl shadow-2xl relative overflow-hidden" 
+          x-data="{ 
+              age: 50, height: 175, weight: 75, ap_hi: 120, ap_lo: 80,
+              get bmi() { return (this.weight / ((this.height/100)**2)).toFixed(1) }
+          }">
+        
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cardio-500 to-medical-500"></div>
+
+        <div class="grid md:grid-cols-2 gap-10">
+            
+            <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-cardio-500 uppercase tracking-widest text-xs mb-4">Core Metrics</h3>
+                
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-sm font-medium">Age</label>
+                        <span class="text-sm font-bold text-cardio-500" x-text="age + ' years'"></span>
+                    </div>
+                    <input type="range" name="age" min="30" max="80" x-model="age" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-cardio-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Height (cm)</label>
+                        <input type="number" name="height" x-model="height" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 focus:ring-2 focus:ring-cardio-500 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Weight (kg)</label>
+                        <input type="number" name="weight" x-model="weight" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 focus:ring-2 focus:ring-cardio-500 outline-none transition">
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 dark:bg-medical-900/20 p-4 rounded-xl flex justify-between items-center border border-blue-100 dark:border-medical-500/20">
+                    <span class="text-sm font-medium text-medical-600 dark:text-medical-400">Calculated BMI</span>
+                    <span class="text-xl font-bold text-medical-700 dark:text-medical-300" x-text="bmi"></span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Gender</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="2" class="peer sr-only" checked>
+                            <div class="p-3 text-center rounded-lg border border-gray-200 dark:border-white/10 peer-checked:bg-cardio-500 peer-checked:text-white peer-checked:border-cardio-500 transition">
+                                Male
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="1" class="peer sr-only">
+                            <div class="p-3 text-center rounded-lg border border-gray-200 dark:border-white/10 peer-checked:bg-cardio-500 peer-checked:text-white peer-checked:border-cardio-500 transition">
+                                Female
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-medical-500 uppercase tracking-widest text-xs mb-4">Vitals & Lifestyle</h3>
+
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-sm font-medium">Systolic BP</label>
+                        <span class="text-sm font-bold text-medical-500" x-text="ap_hi"></span>
+                    </div>
+                    <input type="range" name="ap_hi" min="90" max="200" x-model="ap_hi" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-medical-500">
+                </div>
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-sm font-medium">Diastolic BP</label>
+                        <span class="text-sm font-bold text-medical-500" x-text="ap_lo"></span>
+                    </div>
+                    <input type="range" name="ap_lo" min="60" max="130" x-model="ap_lo" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-medical-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Cholesterol</label>
+                        <select name="cholesterol" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 outline-none">
+                            <option value="1">Normal</option>
+                            <option value="2">Above Normal</option>
+                            <option value="3">High</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Glucose</label>
+                        <select name="gluc" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 outline-none">
+                            <option value="1">Normal</option>
+                            <option value="2">Above Normal</option>
+                            <option value="3">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-4">
+                    <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-white/10 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="cigarette" class="w-5 h-5 text-gray-400"></i>
+                            <span class="text-sm font-medium">Smoker</span>
+                        </div>
+                        <input type="hidden" name="smoke" value="0"><input type="checkbox" name="smoke" value="1" class="w-5 h-5 accent-cardio-500 rounded">
+                    </label>
+                    <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-white/10 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="wine" class="w-5 h-5 text-gray-400"></i>
+                            <span class="text-sm font-medium">Alcohol Consumer</span>
+                        </div>
+                        <input type="hidden" name="alco" value="0"><input type="checkbox" name="alco" value="1" class="w-5 h-5 accent-cardio-500 rounded">
+                    </label>
+                    <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-white/10 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="activity" class="w-5 h-5 text-gray-400"></i>
+                            <span class="text-sm font-medium">Physically Active</span>
+                        </div>
+                        <input type="hidden" name="active" value="0"><input type="checkbox" name="active" value="1" class="w-5 h-5 accent-cardio-500 rounded" checked>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full mt-10 bg-gradient-to-r from-cardio-600 to-red-800 text-white font-bold py-4 rounded-xl text-lg shadow-xl shadow-cardio-500/30 hover:shadow-cardio-500/50 hover:scale-[1.01] transition-all transform flex items-center justify-center gap-2">
+            <i data-lucide="search"></i> Analyze Risk
+        </button>
+
+    </form>
+</div>
+{% endblock %}

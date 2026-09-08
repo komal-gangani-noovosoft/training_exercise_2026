@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-12">
+    
+    <div class="mb-12">
+        <h2 class="text-3xl font-bold mb-2">Model Intelligence</h2>
+        <p class="text-gray-500 dark:text-gray-400">Transparent AI: Understanding how we predict risk.</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div class="glass p-6 rounded-2xl text-center">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">Accuracy</p>
+            <p class="text-4xl font-extrabold text-cardio-500">{{ (metrics['accuracy']* 100)|round(1) }}%</p>
+        </div>
+        <div class="glass p-6 rounded-2xl text-center">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">ROC AUC</p>
+            <p class="text-4xl font-extrabold text-medical-500">{{ metrics['roc_auc']|round(3) }}</p>
+        </div>
+        <div class="glass p-6 rounded-2xl text-center">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">Precision</p>
+            <p class="text-4xl font-extrabold text-purple-500">{{ metrics['pr_auc']|round(3) }}</p>
+        </div>
+        <div class="glass p-6 rounded-2xl text-center">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">Data Points</p>
+            <p class="text-4xl font-extrabold text-white">70k+</p>
+        </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+        
+        <div class="glass p-8 rounded-3xl">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i data-lucide="git-pull-request" class="text-cardio-500"></i> 
+                Top Risk Factors
+            </h3>
+            <canvas id="featureChart"></canvas>
+            <p class="mt-4 text-sm text-gray-500 bg-gray-100 dark:bg-white/5 p-4 rounded-xl border-l-4 border-cardio-500">
+                <strong>Explainability Note:</strong> High blood pressure (Systolic/Diastolic) and Age act as the primary drivers for the model's decision making process.
+            </p>
+        </div>
+
+        <div class="glass p-8 rounded-3xl">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i data-lucide="award" class="text-yellow-500"></i>
+                Algorithm Benchmark
+            </h3>
+            <canvas id="comparisonChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Theme colors
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#9ca3af' : '#4b5563';
+    const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+
+    // Feature Chart
+    new Chart(document.getElementById('featureChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ feature_data.labels | tojson }},
+            datasets: [{
+                label: 'Importance (%)',
+                data: {{ feature_data["values"] | tojson }},
+                backgroundColor: 'rgba(239, 68, 68, 0.8)', // Cardio Red
+                borderRadius: 6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { color: textColor } },
+                y: { grid: { display: false }, ticks: { color: textColor } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Comparison Chart
+    new Chart(document.getElementById('comparisonChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ comparison.models | tojson }},
+            datasets: [{
+                label: 'Accuracy (%)',
+                data: {{ comparison.accuracies | tojson }},
+                backgroundColor: ['gray', 'gray', 'gray', '#3b82f6'], // Highlight our model
+                borderRadius: 6
+            }]
+        },
+        options: {
+            scales: {
+                y: { min: 50, grid: { color: gridColor }, ticks: { color: textColor } },
+                x: { grid: { display: false }, ticks: { color: textColor } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>
+{% endblock %}

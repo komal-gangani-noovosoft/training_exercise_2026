@@ -1,0 +1,57 @@
+
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-6 py-12 text-center">
+    
+    <div class="glass p-10 rounded-3xl relative overflow-hidden border-t-8 border-t-{{ color }}-500">
+        
+        <div class="absolute inset-0 bg-{{ color }}-500/10 blur-[100px] pointer-events-none"></div>
+
+        <div class="relative z-10 mb-8 flex justify-center">
+            <div class="p-6 rounded-full bg-{{ color }}-500/20">
+                <i data-lucide="heart" class="w-20 h-20 text-{{ color }}-500 fill-current {{ 'animate-heartbeat-fast' if risk == 'High' else 'animate-heartbeat' }}"></i>
+            </div>
+        </div>
+
+        <h2 class="relative z-10 text-lg uppercase tracking-widest font-bold text-{{ color }}-500 mb-2">Analysis Complete</h2>
+        
+        <h1 class="relative z-10 text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 dark:text-white">
+            {{ risk }} Risk <span class="text-{{ color }}-500">Detected</span>
+        </h1>
+        
+        <div class="relative z-10 text-2xl font-mono text-gray-600 dark:text-gray-300 mb-10">
+            Probability: <span class="font-bold text-{{ color }}-500">{{ prob }}%</span>
+        </div>
+
+        <div class="relative z-10 text-left bg-gray-50 dark:bg-white/5 rounded-2xl p-6 border border-gray-200 dark:border-white/10" x-data="{ open: false }">
+            <button @click="open = !open" class="flex justify-between items-center w-full">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i data-lucide="stethoscope" class="text-medical-500"></i> 
+                    Medical Recommendations
+                </h3>
+                <i data-lucide="chevron-down" class="transition-transform duration-300" :class="{'rotate-180': open}"></i>
+            </button>
+            
+            <div x-show="open" x-collapse class="mt-4 space-y-3 text-gray-600 dark:text-gray-300 text-sm">
+                {% if risk == 'High' %}
+                    <p class="flex gap-2"><i data-lucide="alert-triangle" class="text-red-500 w-4 h-4"></i> <strong>Immediate Action:</strong> Consult a cardiologist for a full lipid profile.</p>
+                    <p class="flex gap-2"><i data-lucide="x" class="text-red-500 w-4 h-4"></i> Reduce sodium intake and avoid processed sugars immediately.</p>
+                {% elif risk == 'Medium' %}
+                    <p class="flex gap-2"><i data-lucide="activity" class="text-yellow-500 w-4 h-4"></i> Increase moderate physical activity to 150 mins/week.</p>
+                {% else %}
+                    <p class="flex gap-2"><i data-lucide="check" class="text-green-500 w-4 h-4"></i> Maintain current healthy lifestyle habits.</p>
+                {% endif %}
+                <p class="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-200 dark:border-white/10">* This tool utilizes AI for estimation only and is not a substitute for professional medical diagnosis.</p>
+            </div>
+        </div>
+
+        <div class="mt-8 relative z-10">
+            <a href="/predict" class="text-sm font-medium text-gray-500 hover:text-cardio-500 transition underline decoration-dashed underline-offset-4">
+                Analyze another patient
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
