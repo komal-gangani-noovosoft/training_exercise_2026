@@ -67,6 +67,7 @@ function map_data(red_ind , svg){
         drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'red'})
     )
 }
+
 function rule1(svg){
     clear(svg)
     for(let i=0;i<60;i++){

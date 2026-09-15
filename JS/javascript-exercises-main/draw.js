@@ -56,12 +56,15 @@ function drawTriangle(svg, {x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0, fill
     svg.appendChild(element);
 }
 
-function drawText(svg, {x = 0, y = 0, text = ''}) {
+function drawText(svg, {x = 0, y = 0, text = '' , vertical=false}) {
     const element = document.createElementNS(svgNS, 'text');
     element.setAttributeNS(null, 'x', x.toString());
     element.setAttributeNS(null, 'y', y.toString());
     element.setAttributeNS(null, 'class', 'svg-text');
     element.textContent = text;
+    if (vertical) {
+        element.style.writingMode = 'vertical-lr';
+    }
 
     svg.appendChild(element);
 }
