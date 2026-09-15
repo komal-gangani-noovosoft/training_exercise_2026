@@ -15,9 +15,6 @@ for(let i=0;i<samples.length;i++){
 
 }
 arr.push(sum/count)
-console.log(arr.length)
-console.log(arr)
-
 
 function drawControlPlot(svg){
     for(let i=0;i<=12;i++){
@@ -64,28 +61,26 @@ const svg3 = document.getElementById('svg3')
 
 document.getElementById("clear" ).addEventListener("click" , ()=> clear(svg3))
 
-
+let red_ind = new Set()
 function map_data(red_ind , svg){
-    for(let i=0;i<60;i++){
-        if(red_ind.has(i)){
-            drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'red'});
-        }else{
-            drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'lightgreen'});
-        }
-    }
+    red_ind.forEach(i =>
+        drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'red'})
+    )
 }
 function rule1(svg){
     for(let i=0;i<60;i++){
         if(arr[i]>43 || arr[i]<37){
             drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'red'});
-        }else{
+        }
+        else{
             drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'lightgreen'});
         }
     }
 }
 
 function rule2(svg){
-    let red_ind = new Set()
+    clear(svg)
+    red_ind.clear()
     let cntd = 1
     let cnti = 1
 
@@ -112,9 +107,10 @@ function rule2(svg){
 }
 
 function rule3(svg){
+    clear(svg)
+    red_ind.clear()
     let cntd = 0
     let cntu = 0
-    let red_ind = new Set()
 
     for(let i=0;i<60;i++){
 
@@ -140,9 +136,10 @@ function rule3(svg){
 }
 
 function rule4(svg){
+    clear(svg)
+    red_ind.clear()
     let cnt = 1
     let trend = 0
-    let red_ind = new Set()
 
     for(let i=1;i<60;i++){
         let currentTrend = 0;
@@ -175,7 +172,8 @@ function rule4(svg){
 }
 
 function rule5(svg){
-    let red_ind = new Set()
+    clear(svg)
+    red_ind.clear()
     for(let i=2;i<60;i++){
 
         let d1 = arr[i]
@@ -195,7 +193,8 @@ function rule5(svg){
 }
 
 function rule6(svg){
-    let red_ind = new Set()
+    clear(svg)
+    red_ind.clear()
     for(let i=5;i<60;i++){
 
         let d1 = arr[i]
@@ -215,8 +214,9 @@ function rule6(svg){
 }
 
 function rule7(svg){
+    clear(svg)
+    red_ind.clear()
     let cnt = 0
-    let red_ind = new Set()
     for(let i=0;i<60;i++){
 
         if(arr[i]<41 && arr[i]>39 ){
@@ -236,8 +236,8 @@ function rule7(svg){
 }
 
 function clear(svg){
-    for(let i=0;i<60;i++){
-        drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'green'});
+    for(const ind of red_ind){
+        drawCircle(svg, {cx: 43 + 23*(ind+1), cy: 380-((arr[ind]-33.5)*30), r: 2, fill: 'green'});
     }
 }
 

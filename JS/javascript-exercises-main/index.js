@@ -2,7 +2,6 @@
 
 const svg1 = document.getElementById('svg1');
 drawExample(svg1);
-console.log(svg1);
 
 const svg2 = document.getElementById('svg2');
 drawHist(svg2);
