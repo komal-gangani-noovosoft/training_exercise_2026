@@ -68,14 +68,13 @@ function map_data(red_ind , svg){
     )
 }
 function rule1(svg){
+    clear(svg)
     for(let i=0;i<60;i++){
         if(arr[i]>43 || arr[i]<37){
-            drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'red'});
-        }
-        else{
-            drawCircle(svg, {cx: 43 + 23*(i+1), cy: 380-((arr[i]-33.5)*30), r: 2, fill: 'lightgreen'});
+            red_ind.add(i)
         }
     }
+    map_data(red_ind,svg)
 }
 
 function rule2(svg){
