@@ -46,26 +46,6 @@ const avg_temperature = document.getElementById("avg_temperature")
 const avg_voltage = document.getElementById("avg_voltage")
 
 
-function getAverage(arr){
-    let currRange = Number(timestamps[0]) + 180000
-    let avgArray = []
-    let sum = arr[0]
-    let cnt = 1
-    for(let i=1;i<arr.length;i++){
-        if(Number(timestamps[i])<=currRange){
-            sum += arr[i]
-            cnt++
-        }else{
-            avgArray.push(sum/cnt)
-            sum = arr[i]
-            cnt = 1
-            currRange = Number(timestamps[i]) + 180000
-        }
-    }
-    avgArray.push(sum/cnt)
-    return avgArray
-}
-
 function drawLiveChart(svg){
 
     svg.innerHTML = '';
@@ -110,6 +90,26 @@ function drawLiveChart(svg){
 
 }
 
+function getAverage(arr){
+    let currRange = Number(timestamps[0]) + 180000
+    let avgArray = []
+    let sum = arr[0]
+    let cnt = 1
+    for(let i=1;i<arr.length;i++){
+        if(Number(timestamps[i])<=currRange){
+            sum += arr[i]
+            cnt++
+        }else{
+            avgArray.push(sum/cnt)
+            sum = arr[i]
+            cnt = 1
+            currRange = Number(timestamps[i]) + 180000
+        }
+    }
+    avgArray.push(sum/cnt)
+    return avgArray
+}
+
 function drawAvgChart(svg , arr){
     svg.innerHTML = ''
 
@@ -134,7 +134,6 @@ function drawAvgChart(svg , arr){
     }
 
 }
-
 
 // async function fetchData() {
 //     try {
