@@ -5,13 +5,13 @@ import { getDatabase, ref, onValue } from "firebase/database";
 //region Variable declaration
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCj3Ce3xkK-NwftMGz10Q90PLCrR2NsRsI",
-    authDomain: "node-red-demo-d13ff.firebaseapp.com",
-    databaseURL: "https://node-red-demo-d13ff-default-rtdb.firebaseio.com",
-    projectId: "node-red-demo-d13ff",
-    storageBucket: "node-red-demo-d13ff.firebasestorage.app",
-    messagingSenderId: "824136624367",
-    appId: "1:824136624367:web:4b4ccc20d101c4ee7dd31a"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -21,6 +21,21 @@ const voltRef = ref(db, 'data/voltage')
 const svg4= document.getElementById("svg4")
 const avg_temperature = document.getElementById("avg_temperature")
 const avg_voltage = document.getElementById("avg_voltage")
+
+const CHART_CONFIG = {
+
+    BLOCK_SPACE_Y:30,
+    BLOCK_SPACE_X:30,
+
+    Y_AXIS_BOTTOM:380,
+    Y_AXIS_TOP:10,
+    X_AXIS_LEFT:40,
+    X_AXIS_RIGHT:1440,
+
+    Y_MIN_DATA:34,
+    Y_MAX_DATA:46,
+    AVG_TIME_WINDOW:3*60*1000
+}
 let temperature = []
 let voltage = []
 let timestamps = []
@@ -108,19 +123,31 @@ function getAverage(arr){
 }
 
 
+
 function staticChart(svg) {
     svg.innerHTML = '';
 
     for(let i=0; i<=12; i++){
-        drawLine(svg, {x1: 36, y1: 20 + 30 * i, x2: 40, y2: 20 + 30 * i});
-        drawText(svg, {x: 20, y: 25 + 30 * i, text: 46 - i});
+        drawLine(svg, {x1: CHART_CONFIG.X_AXIS_LEFT-4, y1: 20 + CHART_CONFIG.BLOCK_SPACE_Y * i, x2: CHART_CONFIG.X_AXIS_LEFT, y2: 20 + CHART_CONFIG.BLOCK_SPACE_Y * i});
+        drawText(svg, {x: 20, y: 25 + CHART_CONFIG.BLOCK_SPACE_Y * i, text: CHART_CONFIG.Y_MAX_DATA - i});
     }
 
-    drawLine(svg, {x1: 40, y1: 380, x2: 1440, y2: 380});
-    drawLine(svg, {x1: 40, y1: 10,  x2: 40,   y2: 380});
+    drawLine(svg, {x1: CHART_CONFIG.X_AXIS_LEFT, y1: CHART_CONFIG.Y_AXIS_BOTTOM, x2: CHART_CONFIG.X_AXIS_RIGHT, y2: CHART_CONFIG.Y_AXIS_BOTTOM});
+    drawLine(svg, {x1: CHART_CONFIG.X_AXIS_LEFT, y1: CHART_CONFIG.Y_AXIS_TOP,  x2: CHART_CONFIG.X_AXIS_LEFT,   y2: CHART_CONFIG.Y_AXIS_BOTTOM});
 
 }
 
+function getChartPoint(index, value) {
+    const {
+        X_AXIS_LEFT, BLOCK_SPACE_X, Y_AXIS_BOTTOM, Y_MIN_DATA, BLOCK_SPACE_Y
+    } = CHART_CONFIG;
+
+    const x = X_AXIS_LEFT + (BLOCK_SPACE_X * index);
+    const y = Y_AXIS_BOTTOM - ((value - Y_MIN_DATA) * BLOCK_SPACE_Y);
+
+
+    return { x, y };
+}
 
 function drawLiveChart(svg){
 
@@ -133,30 +160,33 @@ function drawLiveChart(svg){
 
 
     for(let i=1;i<=currTimestmaps.length;i++){
-        drawLine(svg, {x1: 40 + 30 * i, y1: 380, x2: 40 + 30 * i, y2: 384, className:'dynamic'});
-        drawText(svg, {x: 40 + 30 * i, y: 400, text: currTimestmaps[i-1],vertical:true, className:'dynamic'});
+        drawLine(svg, {x1: CHART_CONFIG.X_AXIS_LEFT + CHART_CONFIG.BLOCK_SPACE_X * i, y1: CHART_CONFIG.Y_AXIS_BOTTOM, x2: CHART_CONFIG.X_AXIS_LEFT + CHART_CONFIG.BLOCK_SPACE_X * i, y2: CHART_CONFIG.Y_AXIS_BOTTOM+4, className:'dynamic'});
+        drawText(svg, {x: CHART_CONFIG.X_AXIS_LEFT + CHART_CONFIG.BLOCK_SPACE_X * i, y: CHART_CONFIG.Y_AXIS_BOTTOM+20, text: currTimestmaps[i-1],vertical:true, className:'dynamic'});
+
     }
 
     let prevTempX = null, prevTempY = null;
     let prevVoltX = null, prevVoltY = null;
 
     for(let i=1;i<=currTimestmaps.length;i++){
+        const { x:xTemp, y:yTemp } = getChartPoint(i, currTemperature[i-1]);
 
         if(prevTempX!==null){
-            drawLine(svg , {x1:prevTempX , y1:prevTempY , x2:40 + 30*(i) , y2:380-((currTemperature[i-1]-34)*30) , stroke:'lightgreen' , strokeType:'solid', className:'dynamic'})
+            drawLine(svg , {x1:prevTempX , y1:prevTempY , x2:xTemp , y2:yTemp , stroke:'lightgreen' , strokeType:'solid', className:'dynamic'})
         }
-        prevTempX =40 + 30*(i)
-        prevTempY = 380-((currTemperature[i-1]-34)*30)
-        drawCircle(svg, {cx: 40 + 30*(i), cy: 380-((currTemperature[i-1]-34)*30), r: 2, fill: 'green', className:'dynamic'});
+        prevTempX =xTemp
+        prevTempY = yTemp
+        drawCircle(svg, {cx: xTemp, cy: yTemp, r: 2, fill: 'green', className:'dynamic'});
 
-        if(prevVoltX!==null && currVoltage[i-1]!==undefined){
-            drawLine(svg , {x1:prevVoltX , y1:prevVoltY , x2:40 + 30*(i) , y2:380-((currVoltage[i-1]-34)*30) , stroke:'lightblue' , strokeType:'solid', className:'dynamic'})
-        }
-        prevVoltX =40 + 30*(i)
-        prevVoltY = 380-((currVoltage[i-1]-34)*30)
         if(currVoltage[i-1]!==undefined){
-            drawCircle(svg, {cx: 40 + 30*(i), cy: 380-((currVoltage[i-1]-34)*30), r: 2, fill: 'blue' , className:'dynamic'});
+            const { x:xVolt, y:yVolt } = getChartPoint(i, currVoltage[i-1]);
+            if(prevVoltX!==null && currVoltage[i-1]!==undefined){
+                drawLine(svg , {x1:prevVoltX , y1:prevVoltY , x2:xVolt , y2:yVolt , stroke:'lightblue' , strokeType:'solid', className:'dynamic'})
+            }
+            prevVoltX = xVolt
+            prevVoltY = yVolt
 
+            drawCircle(svg, {cx: xVolt, cy: yVolt, r: 2, fill: 'blue', className:'dynamic'});
         }
 
     }
@@ -169,13 +199,13 @@ function drawAvgChart(svg , arr){
 
 
     for(let i=1;i<=arr.length;i++){
-        drawLine(svg, {x1: 40 + 30 * i, y1: 380, x2: 40 + 30 * i, y2: 384,className:'dynamic-avg'});
-        drawText(svg, {x: 40 + 30 * i, y: 400, text: i, className:'dynamic-avg'});
+        drawLine(svg, {x1: CHART_CONFIG.X_AXIS_LEFT + CHART_CONFIG.BLOCK_SPACE_X * i, y1: CHART_CONFIG.Y_AXIS_BOTTOM, x2: CHART_CONFIG.X_AXIS_LEFT + CHART_CONFIG.BLOCK_SPACE_X * i, y2: CHART_CONFIG.Y_AXIS_BOTTOM+4, className:'dynamic-avg'});
+        drawText(svg, {x: CHART_CONFIG.X_AXIS_LEFT + CHART_CONFIG.BLOCK_SPACE_X * i, y: CHART_CONFIG.Y_AXIS_BOTTOM+20, text: [i-1], className:'dynamic-avg'});
     }
 
 
     for(let i=1;i<=arr.length;i++){
-        drawCircle(svg, {cx: 40 + 30*(i), cy: 380-((arr[i-1]-34)*30), r: 2, fill: 'green', className:'dynamic-avg'});
+        drawCircle(svg, {cx: CHART_CONFIG.X_AXIS_LEFT + CHART_CONFIG.BLOCK_SPACE_X*(i), cy: CHART_CONFIG.Y_AXIS_BOTTOM-((arr[i-1]-CHART_CONFIG.Y_MIN_DATA)*CHART_CONFIG.BLOCK_SPACE_Y), r: 2, fill: 'blue', className:'dynamic-avg'});
     }
 
 }
