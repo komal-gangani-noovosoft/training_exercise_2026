@@ -1,17 +1,20 @@
 import express from 'express'
 import {initializeApp , cert } from 'firebase-admin/app'
 import {getFirestore , FieldValue} from 'firebase-admin/firestore'
+import cors from 'cors'
 import path from 'path'
 import {fileURLToPath} from 'url'
-import serviceAccount from './serviceAccountKey.json' with { type: 'json' };
+import serviceAccount from '../serviceAccountKey.json' with { type: 'json' };
 
 const app = express()
+app.use(cors());
+
 app.use(express.json())
 app.use(express.urlencoded({extend: true}))
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-app.use(express.static(path.join(__dirname , 'public')))
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = path.dirname(__filename)
+// app.use(express.static(path.join(__dirname , 'public')))
 
 initializeApp({
     credential: cert(serviceAccount)

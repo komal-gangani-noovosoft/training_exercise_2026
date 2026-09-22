@@ -1,11 +1,31 @@
+
 services:
-  web:
-    build: .
-    container_name: express_app
+  backend-server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
+
+
+  frontend-client:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     volumes:
-      - .:/app
+      - ./frontend:/app
       - /app/node_modules
-    working_dir: /app
-    command: npm run dev
+    depends_on:
+      - backend-server
+
+#  frontend-client:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:80"
+#    depends_on:
+#      - backend-server
+
