@@ -32,7 +32,7 @@ order by rank;
 --payment , rental , inventory, film , film_category
 
 with category_revenue as (select fc.category_id, rank() over (order by sum(p.amount) desc) as rank, sum(p.amount) as "total_revenu"
-                          from payment as p
+                           from payment as p
                                    join rental as r using (rental_id)
                                    join inventory as i using (inventory_id)
 
