@@ -2,7 +2,7 @@ const contactForm = document.getElementById('contactForm')
 const messageSection = document.getElementById('messages')
 async function fetchMessages(){
     try {
-        const response = await fetch('/api/contact/message')
+        const response = await fetch('/api/contacts/messages')
         const messages = await response.json()
 
         messageSection.innerHTML = ''
@@ -50,7 +50,7 @@ contactForm.addEventListener('submit' , async (e)=>{
     };
 
     try {
-        const response = await fetch('/api/contact',{
+        const response = await fetch('/api/contacts',{
             method:'POST',
             headers : {'content-Type' : 'application/json'},
             body : JSON.stringify(formData)

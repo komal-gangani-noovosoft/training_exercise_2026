@@ -24,7 +24,7 @@ const db = getFirestore()
 
 const PORT = 3000
 
-app.post('/api/contact' , async (req,res)=>{
+app.post('/api/contacts' , async (req,res)=>{
     try{
         const {name , email , message} = req.body
 
@@ -44,7 +44,7 @@ app.post('/api/contact' , async (req,res)=>{
     }
 })
 
-app.get('/api/contact' , async (req,res) => {
+app.get('/api/contacts' , async (req,res) => {
     const data = await db.collection('contact').get();
     const mail = new Set()
 
@@ -61,7 +61,7 @@ app.get('/api/contact' , async (req,res) => {
     res.status(200).json(uniqueContacts)
 })
 
-app.get('/api/contact/message' , async (req,res)=>{
+app.get('/api/contacts/messages' , async (req,res)=>{
     const data = await db.collection('contact').orderBy('timestamp','desc').get()
 
     const messages = data.docs.map(doc => ({
